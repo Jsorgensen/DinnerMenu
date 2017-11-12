@@ -8,43 +8,30 @@ angular.module('myApp.view1', ['ngRoute'])
   });
 }])
 .controller('View1Ctrl', [ '$scope', '$http', function($scope, $http) {
-  $scope.name = '';
-  $scope.names = [{name:"Chris"}, {name:"Calvin"}];
-  $scope.addName = function() {
-    $scope.names.push( {'name':$scope.name} );
-    $scope.name = '';
-  };
-
-  $scope.test = 'this is a test';
-  $scope.doTest = function(){
-    $scope.test = $scope.name;
-  };
-
   $scope.getData = function(){
-    $scope.test = 'pretest';
-
     var url = 'http://127.0.0.1:5984/dinner_meals/_design/view3/_view/object?limit=20&reduce=false&include_docs=true&conflicts=true';
     $http.get(url).
     success(function(data, status, headers, config) {
-      inputData(data);
-      $scope.test = menuTitles;
+      inputData($scope, data);
+      $scope.options = menuTitles;
     }).
     error(function(data, status, headers, config) {
-      $scope.test = 'failure to get stuff...';
+      $scope.options = 'failure to get stuff...';
     });
   };
 
-  //$scope.getData();
+  $scope.getData();
 }]);
 
 var rawData;
 var menuItems = [];
 var menuTitles = [];
 
-function inputData(data){
+function inputData($scope, data){
   rawData = data;
 
-  menuItems = rawData.rows;
+  menuItems = rawData.rows.map(row => row.value);
 
   menuTitles = menuItems.map(item => item.name);
+  $scope.titles = menuTitles;
 }
