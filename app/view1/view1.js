@@ -26,27 +26,25 @@ angular.module('myApp.view1', ['ngRoute'])
     var url = 'http://127.0.0.1:5984/dinner_meals/_design/view3/_view/object?limit=20&reduce=false&include_docs=true&conflicts=true';
     $http.get(url).
     success(function(data, status, headers, config) {
-      $scope.test = inputData(data);
+      inputData(data);
+      $scope.test = menuTitles;
     }).
     error(function(data, status, headers, config) {
       $scope.test = 'failure to get stuff...';
     });
   };
+
+  //$scope.getData();
 }]);
 
 var rawData;
 var menuItems = [];
-var menuItem;
-var itemName;
+var menuTitles = [];
 
 function inputData(data){
   rawData = data;
 
   menuItems = rawData.rows;
 
-  menuItem = menuItems[0].value;
-
-  itemName = menuItem.name;
-
-  return itemName;
+  menuTitles = menuItems.map(item => item.name);
 }
